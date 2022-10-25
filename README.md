@@ -9,8 +9,6 @@ all hands meeting workshop: Working with data from the US National
 Ecological Observatory Network
 (<https://gleon.org/meetings/gleon22/Workshops>).
 
-\#Add in information here about the code and links that will be used
-
 <!-- ****** Organizers ****** -->
 
 Organized by Kevin Rose (Rensselaer Polytechnic Institute) and led by
@@ -29,9 +27,9 @@ Kaelin Cawley, Bobby Hensley, and Steph Parker (all from NEON).
 3.  The tutorial leaders will use RStudio, which is also recommended,
     but optional.
 4.  Install required packages: `neonUtilities`, `tidyverse`, `ecocomDP`,
-    `vegan`, `ggplot2`, and `lubridate.`.
-
-\#Add code lines here for how to install packages.
+    `vegan`, `ggplot2`, and `lubridate.`. You can run the following to
+    install all the packages:
+    install.packages(c(‘neonUtilities’,‘tidyverse’,‘ecocomDP’,‘vegan’,‘ggplot2’,‘lubridate’))
 
 <!-- ****** Agenda ****** -->
 
@@ -39,9 +37,10 @@ Kaelin Cawley, Bobby Hensley, and Steph Parker (all from NEON).
 
 1.  20 minute introduction to NEON
 2.  70 minute live coding tutorial in R using lake chemical and physical
-    data
+    data (NEON-AIS-data-GLEON2022.Rmd script in this repo)
 3.  30 minute break
 4.  60 minute live coding tutorial in R using lake biological data
+    (<https://www.neonscience.org/resources/learning-hub/tutorials/neon-biodiversity-ecocomdp-cyverse>)
 
 <!-- ****** Intro Links ****** -->
 

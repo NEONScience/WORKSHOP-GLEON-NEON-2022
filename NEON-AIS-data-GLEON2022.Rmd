@@ -1,0 +1,523 @@
+---
+syncID: 317ecab8e00b4a959a76dba181bb33b8
+title: "Download and work with NEON Aquatic Instrument Data"
+description: "Tutorial for downloading NEON AIS data using the neonUtilities package and then exploring and understanding the downloaded data"
+dateCreated: 2022-10-21
+authors: Bobby Hensley
+contributors: 
+estimatedTime: 80 minutes
+packagesLibraries: neonUtilities, ggplot2
+topics: data-management, rep-sci
+languageTool: R, API
+code1: R/download-ais-data/download-NEON-AIS-data.R
+tutorialSeries:
+urlTitle: explore-neon-ais-data
+editor_options: 
+  chunk_output_type: inline
+---
+
+This tutorial covers downloading NEON Aquatic Instrument System (AIS) data 
+using the neonUtilities R package, as well as basic instruction in beginning to 
+explore and work with the downloaded data.  This includes navigating data
+documentation, separating data using the horizontal and vertical location 
+location indices, variable,and interpreting quality flags. 
+
+<div id="ds-objectives" markdown="1">
+
+## Objectives
+
+After completing this activity, you will be able to:
+
+* Download NEON AIS data using the `neonUtilities` package.
+* Understand downloaded data sets and load them into R for analyses.
+* Use the sensorPositions file to understand where data is being collected.
+* Understand and interpret quality flags.
+
+## Things You'll Need To Complete This Tutorial
+To complete this tutorial you will need R (version >4.1) and, 
+preferably, RStudio loaded on your computer.
+
+### Install R Packages
+
+* **neonUtilities**: Basic functions for accessing NEON data
+* **ggplot2**: Plotting functions
+
+These packages are on CRAN and can be installed by 
+`install.packages()`.
+
+### Additional Resources
+
+* <a href="https://github.com/NEONScience/NEON-Utilities/neonUtilities" target="_blank">GitHub repository for neonUtilities</a>
+
+</div>
+
+## Download Files and Load Directly to R: loadByProduct()
+
+The most popular function in `neonUtilities` is `loadByProduct()`. 
+This function downloads data from the NEON API, merges the site-by-month 
+files, and loads the resulting data tables into the R environment, 
+assigning each data type to the appropriate R class. This is a popular 
+choice because it ensures you're always working with the most up-to-date data, 
+and it ends with ready-to-use tables in R. However, if you use it in
+a workflow you run repeatedly, keep in mind it will re-download the 
+data every time.
+
+Before we get the NEON data, we need to install (if not already done) and load 
+the neonUtilities R package, as well as other packages we will use in the 
+analysis. 
+
+```{r set-up-env, eval=F}
+# Install neonUtilities package if you have not yet.
+install.packages("neonUtilities")
+install.packages("ggplot2")
+```
+
+```{r load-packages}
+# Set global option to NOT convert all character variables to factors
+options(stringsAsFactors=F)
+
+# Load required packages
+library(neonUtilities)
+library(ggplot2)
+```
+
+The inputs to `loadByProduct()` control which data to download and how 
+to manage the processing. The following are frequently used inputs: 
+
+* `dpID`: the data product ID, e.g. DP1.20288.001
+
+The `dpID` is the data product identifier of the data you want to 
+download. It will be in the form DP#.#####.###. For this tutorial, we'll use some data
+products collected in NEON's Aquatic Instrument System: 
+
+DP1.20288.001: Water quality
+DP1.20264.001: Temperature at specific depths in surface water
+
+* `site`: defaults to "all", meaning all sites with available data; 
+To download data from a specific site, use the 4-letter NEON site code.
+The site codes for the seven NEON lake sites are:
+
+BARC = Barco Lake FL          
+CRAM = Crampton Lake WI         
+LIRO = Little Rock Lake WI      
+PRLA = Prairie Lake ND          
+PRPO = Prairie Pothole ND     
+TOOK = Toolik Lake AK         
+
+* `startdate` and `enddate`: defaults to NA, meaning all dates 
+with available data; or a date in the form YYYY-MM, e.g. 
+2017-06. Since NEON data are provided in month packages, finer 
+scale querying is not available. Both start and end date are 
+inclusive.
+
+* `package`: either basic or expanded data package. Expanded data 
+packages generally include additional information about data 
+quality, such as individual quality flag test results. Not every 
+NEON data product has an expanded package; if the expanded package 
+is requested but there isn't one, the basic package will be 
+downloaded.
+
+* `check.size`: T or F; should the function pause before downloading 
+data and warn you about the size of your download? Defaults to T; if 
+you are using this function within a script or batch process you 
+will want to set this to F.
+
+* `token`: this allows you to input your NEON API token to obtain faster 
+downloads. 
+Learn more about NEON API tokens in the <a href="https//:www.neonscience.org/neon-api-tokens-tutorial" target="_blank">**Using an API Token when Accessing NEON Data with neonUtilities** tutorial</a>. 
+
+There are additional inputs you can learn about in the 
+<a href="https//:www.neonscience.org/neonDataStackR" target="_blank">**Use the neonUtilities R Package to Access NEON Data** tutorial</a>. 
+
+In this exercise, we will want data from only one NEON field site,
+Little Rock Lake (LIRO) from August-October 2021 as the lake turns
+over in the autumn. 
+
+Now let us download our data. If you are not using a NEON token to download 
+your data, neonUtilities will ignore the `token` input. Since we are only 
+downloading three months of data, we can set `check.size = F'. But for
+large data downloads you may want to check your file size first.
+
+```{r download-data-waq, results='hide'}
+# download data of interest - Water Quality
+waq <- loadByProduct(dpID="DP1.20288.001", site="LIRO", 
+                     startdate="2021-08", enddate="2021-10", 
+                     package="expanded", 
+                     token = Sys.getenv("NEON_TOKEN"),
+                     check.size = F)
+
+```
+
+Using what you've learned above, can you modify the code to download data for: 
+DP1.20264.001 - Temperature at specific depths
+DP1.20033.001 - Nitrate in surface water
+
+```{r download-data-nsw, results='hide'}
+# download data of interest - Temperature at specific depths
+tsd <-  loadByProduct(dpID="DP1.20264.001", site="LIRO", 
+                      startdate="2021-08", enddate="2021-10", 
+                      package="expanded", 
+                      token = Sys.getenv("NEON_TOKEN"),
+                      check.size = F)
+
+nsw <-  loadByProduct(dpID="DP1.20033.001", site="LIRO", 
+                      startdate="2021-08", enddate="2021-10", 
+                      package="expanded", 
+                      token = Sys.getenv("NEON_TOKEN"),
+                      check.size = F)
+
+```
+
+## Files Associated with Downloads
+
+The data we've downloaded comes as an object that is a named list of objects. 
+To work with each of them, select them from the list using the `$` operator. 
+
+```{r loadBy-list-names}
+# view all components of the list
+names(waq)
+
+```
+
+We can see that there are multiple objects in the downloaded water quality data. One 
+dataframe of data (`waq_instantaneous`) and six metadata files. Now lets view
+'waq_instantaneous'.
+
+```{r loadBy-list-view}
+# View the dataFrame
+View(waq$waq_instantaneous)
+
+```
+
+If you'd like you can use the `$` operator to assign an object from an item in 
+the list. If you prefer to extract each table from the list and work with it as 
+independent objects, which we will do, you can use the `list2env()` function. 
+
+```{r unlist-vars}
+# unlist the variables and add to the global environment
+list2env(waq, .GlobalEnv)
+```
+
+So what exactly are these files and why would you want to use them? 
+
+* **data file(s)**: There will always be one or more dataframes that include the 
+primary data of the data product you downloaded. Multiple dataframes are 
+available when there are related datatables for a single data product.
+* **readme_xxxxx**: The readme file, with the corresponding 5 digits from the 
+data product number, provides you with important information relevant to the 
+data product.
+* **sensor_postions_xxxxx**: this file contains information about the coordinates
+of each sensor, relative to a reference location. 
+* **variables_xxxxx**: this file contains all the variables found in the 
+associated data table(s). This includes full definitions, units, and other 
+important information. 
+* **issueLog_xxxxx**: this file contains information about issues identified
+for the particular data product.
+
+There are also two files specific to water quality:
+
+* **ais_maintenance**: this file contains information about field maintenance, 
+for example when cleanings and calibrations were performed.
+* **ais_multisondeCleanCal**: this file contains information from the cleanings
+and claibrations, for example what the sensor was reading in standards before 
+and after.  This can be useful in performing drift correction or adjusting 
+calibration offsets. 
+
+Let's perform the same thing for the temperature at specific depths data
+product too:
+```{r unlist-remainder}
+list2env(tsd, .GlobalEnv)
+list2env(nsw, .GlobalEnv)
+```
+
+Note that a few more objects were added to the Global Environment, including:
+
+* `TSD_1_min`
+* `TSD_30_min`
+* `NSW_15_minute`
+
+The `30_min` in the name indicates the different time-averaging intervals in 
+a dataset. If only one time average interests you, you may specify the time 
+interval of interest using the `avg`input when downloading the data using
+`neonUtilities::loadByProduct()`.
+
+Note that in addition to the data files, these data products also include 
+separate `readme`,  `sensor_position` and `variables` files.
+
+## A note about sensor positions
+
+NEON often collects the same type of data from sensors in different locations. These 
+data are delivered together but you will frequently want to plot the data 
+separately or only include data from one sensor in your analysis. NEON uses the 
+`horizontalPosition` variable in the data tables to describe which sensor 
+data is collected from. The `horizontalPosition` is always a three digit number 
+for AIS data. Non-shoreline HOR examples as of 2022 at AIS sites include:
+
+* 101: stream sensors located at the **upstream** station on a **monopod mount**, 
+* 111: stream sensors located at the **upstream** station on an **overhead cable mount**, 
+* 131: stream sensors located at the **upstream** station on a **stand alone pressure transducer mount**, 
+* 102: stream sensors located at the **downstream** station on a monopod mount, 
+* 112: stream sensors located at the **downstream** station on an **overhead cable mount** 
+* 132: stream sensors located at the **downstream** station on a **stand alone pressure transducer mount**, 
+* 110: **pressure transducers** mounted to a **staff gauge**. 
+* 103: sensors mounted on **buoys in lakes or rivers**
+* 130 and 140: sensors mounted in the **littoral zone** of lakes
+
+Let's see what horizontalPositions are found in the data we just downloaded.
+
+```{r unique-HOR}
+# Determine what unique horizontalPositions are in dataset
+print("Water quality horizontal positions:")
+unique(waq_instantaneous$horizontalPosition)
+```
+Out site, LIRO, is a lake site, where water quality is measured from a buoy moored 
+in the deepest part.  
+
+## Separating water quality data collected at different depths 
+
+The deeper NEON lakes (CRAM, LIRO and TOOK) are equipped with profiling
+multisondes which collect vertical profiles of the water column every four
+hours.  A pressure transducer is used to calculate the depth of each 
+measurement.  Here, we can bin these into 1 meter increments.
+
+```{r bin-depths}
+# Subset water quality data by depth into 1 m bins
+waq_0m<-subset(waq_instantaneous,sensorDepth<1)
+waq_1m<-subset(waq_instantaneous,sensorDepth>=1 & sensorDepth<2)
+waq_2m<-subset(waq_instantaneous,sensorDepth>=2 & sensorDepth<3)
+waq_3m<-subset(waq_instantaneous,sensorDepth>=3 & sensorDepth<4)
+waq_4m<-subset(waq_instantaneous,sensorDepth>=4 & sensorDepth<5)
+waq_5m<-subset(waq_instantaneous,sensorDepth>=5 & sensorDepth<6)
+waq_6m<-subset(waq_instantaneous,sensorDepth==6)
+```
+
+## Plot dissolved oxygen data
+
+Now that we have our data binned by depth, we can plot it as a time series. 
+
+First, let's identify the column names important for plotting - time and 
+dissolved oxygen data.  (We can do this for just the original dataframe, 
+since all of the subsetted dataframes will have the same column names).
+There are several ways of doing this:
+
+```{r column-names}
+# One option is to view column names in the data frame
+colnames(waq_instantaneous)
+
+# Alternatively, view the variables object corresponding to the data product for more information
+View(variables_20288)
+```
+Quite a few columns in the water quality data product!
+
+The time column we'll consider for instrumented systems is `endDateTime` 
+because it approximately represents data within the interval on or before the 
+`endDateTime` time stamp. Timestamp column choice matters for time-aggregated 
+datasets, but should not matter for instantaneous data such as water quality.
+When interpreting data, keep in mind NEON timestamps are always in UTC.
+
+The data column we would like to plot is labeled `dissolvedOxygen`.
+The deeper NEON lakes (CRAM, LIRO and TOOK) are equipped with profiling
+multisondes which collect vertical profiles of the water column every four
+hours.  A pressure transducer is used to calculate the depth of each 
+measurement.  For plotting, we can bin these into 1 meter increments.
+
+
+```{r plot-waq}
+# create discrete color bins by rounding to the nearest meter
+waq_instantaneous$sensorDepthRounded<-as.factor(floor(waq_instantaneous$sensorDepth))
+
+# plot
+plot_DO <- ggplot()+
+  geom_point(data=waq_instantaneous,aes(x=startDateTime,y=dissolvedOxygen,color=sensorDepthRounded),na.rm=TRUE) +
+                    ylim(0, 9) + ylab("DO (mg/L)") + xlab(" ") +
+                   ggtitle("Little Rock Lake - Dissolved Oxygen")
+
+plot_DO
+
+```
+## Plot water temperature data
+
+Now let's try plotting temperature. Because the temperature chain is static, each of 
+the thermistors has their own horizontalPosition with a known depth.  These can be 
+found both in the data table, and the sensor_positions file.  
+
+```{r view-position}
+# View sensor positions file
+View(sensor_positions_20264)
+```
+
+Now we can plot temperature in a similar manner to dissolved oxygen.
+
+```{r plot-temp}
+# plot
+plot_Temp <- ggplot()+
+  geom_line(data=TSD_30_min,aes(x=endDateTime,y=tsdWaterTempMean,color=verticalPosition),na.rm=TRUE) +
+                    ylim(9, 27) + ylab("Temp (C)") + xlab(" ") +
+                   ggtitle("Little Rock Lake - Temperature")
+
+plot_Temp
+
+```
+## Plot nitrate data with uncertainty
+
+Most NEON data products are published with uncertainty values. Lets try plotting the 
+nitrate in surface water data with uncertainty bands added.
+
+```{r plot-uncert}
+# plot
+plot_nsw <- ggplot() +
+	geom_line(data = NSW_15_minute, 
+	          aes(startDateTime, surfWaterNitrateMean), 
+	          na.rm=TRUE, color="black") +
+  geom_ribbon(data=NSW_15_minute, 
+              aes(x=startDateTime, 
+                  ymin = (surfWaterNitrateMean-surfWaterNitrateExpUncert), 
+                  ymax = (surfWaterNitrateMean+surfWaterNitrateExpUncert)),
+              alpha = 0.4, fill = "pink") +
+	geom_line( na.rm = TRUE) + 
+	ylim(1, 5) + ylab("NO3-N (uM)") +
+	xlab(" ") +
+  ggtitle("Little Rock Lake - Nitrate w Uncertainty") 
+
+plot_nsw
+
+
+```
+
+## Examine Quality Flagged Data
+
+Data product quality flags fall under two distinct types:
+
+* Automated quality flags, e.g. range, spike, step, null
+* Manual science review quality flag
+
+In instantaneous data such as water quality DP1.20288.001,
+the quality flag columns are denoted with "QF".
+
+In time-averaged data, most quality flags have been aggregated into
+quality metrics, with column names denoted with "QM" representing
+the fraction of flagged points within the time averaging window.
+
+```{r view-qf}
+waq_qf_names <- names(waq_instantaneous)[grep("QF", names(waq_instantaneous))]
+
+print(paste0("Total columns in DP1.20288.001 expanded package = ", 
+             as.character(length(waq_qf_names))))
+
+# so let's just look at those corresponding to dissolved oxygen
+print("dissolved oxygen columns in DP1.20288.001 expanded package:")
+print(waq_qf_names[grep("dissolvedOxygen", waq_qf_names)])
+
+```
+
+A quality flag (QF) of 0 indicates a pass, 1 indicates a fail, and -1 indicates
+a test that could not be performed. For example, a range test cannot be 
+performed on missing measurements.
+
+Detailed quality flags test results are all available in the 
+`package = 'expanded'` setting we specified when calling 
+`neonUtilities::loadByProduct()`. If we had specified `package = 'basic'`,
+we wouldn't be able to investigate the detail in the type of data flag thrown. 
+We would only see the FinalQF columns.
+
+The `AlphaQF` and `BetaQF` represent aggregated results of various QF tests, 
+and vary by a data  product's algorithm. In most cases, an observation's 
+`AlphaQF = 1` indicates whether or not at least one QF was set to a value 
+of 1, and an observation's `BetaQF = 1` indicates whether or not at least one 
+QF was set to value of -1.
+
+Let's consider what values were returned for each test.
+
+```{r view-qf-do}
+ 
+# so let us just look at those corresponding to dissolved
+do_qf_names <- waq_qf_names[grep("dissolvedOxygen",waq_qf_names)]
+
+for(col_nam in do_qf_names){
+  print(paste0(col_nam, " unique values: ", 
+               paste0(unique(waq_instantaneous[,col_nam]), 
+                      collapse = ", ")))
+}
+
+```
+
+Now let's consider the total number of flags generated for each quality test:
+
+```{r dig-into-do, echo=TRUE}
+# Loop across the do QF column names. 
+#  Within each column, count the number of rows that equal '1'.
+print("FLAG TEST - COUNT")
+for (col_nam in do_qf_names){
+  totl_qf_in_col <- length(which(waq_instantaneous[,col_nam] == 1))
+  print(paste0(col_nam,": ",totl_qf_in_col))
+}
+
+print(paste0("Total observations: ", nrow(waq_instantaneous) ))
+print(paste0("Percent flagged: ", sum(waq_instantaneous$dissolvedOxygenFinalQF)/nrow(waq_instantaneous) ))
+print(paste0("Percent non-null flagged: ", (sum(waq_instantaneous$dissolvedOxygenFinalQF)-sum(waq_instantaneous$dissolvedOxygenNullQF))/(nrow(waq_instantaneous)-sum(waq_instantaneous$dissolvedOxygenNullQF))))
+
+```
+
+For specific details on the algorithms used to create a data product and its 
+corresponding quality tests, it's best to first check the data product's 
+Algorithm Theoretical Basis Document (ATBD). For water quality, that is 
+NEON.DOC.004931 listed as Documentation references in the README file and the 
+data product's web page.
+
+If there any manual science review quality flags, the explanation for
+flagging may also be viewed in the data product's README file or in the 
+data product's web page on NEON's data portal.
+
+## Filtering (Some) Quality Flagged Observations
+
+A simple approach to removing quality flagged observations is to remove data 
+when the finalQF is raised. Let's view dissolved oxygen in the context of its 
+final quality flags:
+
+```{r plot-finalQF}
+# sets the QF as a a factor rather than a continuous variable
+waq_instantaneous$dissolvedOxygenFinalQF<-as.factor(waq_instantaneous$dissolvedOxygenFinalQF)
+
+# plot
+plot_DO <- ggplot()+
+  geom_point(data=waq_instantaneous,aes(x=startDateTime,y=dissolvedOxygen,color=dissolvedOxygenFinalQF),na.rm=TRUE) +
+  scale_color_manual(values = c("0" = "blue","1"="red")) +
+                    ylim(0, 9) + ylab("DO (mg/L)") + xlab(" ") +
+                   ggtitle("Little Rock Lake - Dissolved Oxygen by FinalQF")
+
+plot_DO
+
+```
+
+The blue points corresponding to `dissolvedOxygenFinalQF = 0` represents 
+all data that were not flagged.  Conversely, the red points corresponding
+to `dissolvedOxygenFinalQF = 1` represents all data that were flagged,
+What's going on here?  It looks like all of the measurements collected
+during the vertical profiles while the lake is stratified are getting
+flagged. Let's create a similar plot, but using only the stepQF:
+
+```{r plot-stepQF}
+# sets the QF as a a factor rather than a continuous variable
+waq_instantaneous$dissolvedOxygenStepQF<-as.factor(waq_instantaneous$dissolvedOxygenStepQF)
+
+# plot
+plot_DO <- ggplot()+
+  geom_point(data=waq_instantaneous,aes(x=startDateTime,y=dissolvedOxygen,color=dissolvedOxygenStepQF),na.rm=TRUE) +
+  scale_color_manual(values = c("0" = "blue","1"="red")) +
+                    ylim(0, 9) + ylab("DO (mg/L)") + xlab(" ") +
+                   ggtitle("Little Rock Lake - Dissolved Oxygen by StepQF")
+
+plot_DO
+
+```
+
+Because there is a large change from one measurement to the next during
+profiling, these measurements are getting an automated stepQF.  In this
+case however, we believe these differences to be real and not the result
+of an erroneous measurement.  This is a good example of why you should
+not rely solely on the automated quality flags, especially the finalQF
+in evaluating the data.  We encourage users to  download the expanded 
+data package (which contains individual QF) as well as reading the
+documentation to understand how QFs are derived, before determining for 
+yourselves which data points to include or omit in your analysis.
+
