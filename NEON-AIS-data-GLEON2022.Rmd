@@ -1,18 +1,19 @@
 ---
-syncID: 317ecab8e00b4a959a76dba181bb33b8
 title: "Download and work with NEON Aquatic Instrument Data"
-description: "Tutorial for downloading NEON AIS data using the neonUtilities package and then exploring and understanding the downloaded data"
-dateCreated: 2022-10-21
+syncID: 317ecab8e00b4a959a76dba181bb33b8
+description: Tutorial for downloading NEON AIS data using the neonUtilities package
+  and then exploring and understanding the downloaded data
+dateCreated: '2022-10-21'
 authors: Bobby Hensley
-contributors: 
+contributors: null
 estimatedTime: 80 minutes
 packagesLibraries: neonUtilities, ggplot2
 topics: data-management, rep-sci
 languageTool: R, API
 code1: R/download-ais-data/download-NEON-AIS-data.R
-tutorialSeries:
+tutorialSeries: null
 urlTitle: explore-neon-ais-data
-editor_options: 
+editor_options:
   chunk_output_type: inline
 ---
 
@@ -273,27 +274,7 @@ unique(waq_instantaneous$horizontalPosition)
 Out site, LIRO, is a lake site, where water quality is measured from a buoy moored 
 in the deepest part.  
 
-## Separating water quality data collected at different depths 
-
-The deeper NEON lakes (CRAM, LIRO and TOOK) are equipped with profiling
-multisondes which collect vertical profiles of the water column every four
-hours.  A pressure transducer is used to calculate the depth of each 
-measurement.  Here, we can bin these into 1 meter increments.
-
-```{r bin-depths}
-# Subset water quality data by depth into 1 m bins
-waq_0m<-subset(waq_instantaneous,sensorDepth<1)
-waq_1m<-subset(waq_instantaneous,sensorDepth>=1 & sensorDepth<2)
-waq_2m<-subset(waq_instantaneous,sensorDepth>=2 & sensorDepth<3)
-waq_3m<-subset(waq_instantaneous,sensorDepth>=3 & sensorDepth<4)
-waq_4m<-subset(waq_instantaneous,sensorDepth>=4 & sensorDepth<5)
-waq_5m<-subset(waq_instantaneous,sensorDepth>=5 & sensorDepth<6)
-waq_6m<-subset(waq_instantaneous,sensorDepth==6)
-```
-
 ## Plot dissolved oxygen data
-
-Now that we have our data binned by depth, we can plot it as a time series. 
 
 First, let's identify the column names important for plotting - time and 
 dissolved oxygen data.  (We can do this for just the original dataframe, 
@@ -318,7 +299,7 @@ When interpreting data, keep in mind NEON timestamps are always in UTC.
 The data column we would like to plot is labeled `dissolvedOxygen`.
 The deeper NEON lakes (CRAM, LIRO and TOOK) are equipped with profiling
 multisondes which collect vertical profiles of the water column every four
-hours.  A pressure transducer is used to calculate the depth of each 
+hours.  A pressure transducer is used to calculate the `sensorDepth` of each 
 measurement.  For plotting, we can bin these into 1 meter increments.
 
 

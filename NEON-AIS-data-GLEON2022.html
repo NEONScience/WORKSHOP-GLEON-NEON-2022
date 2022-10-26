@@ -298,8 +298,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -307,16 +307,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -430,9 +423,8 @@ install.packages(&quot;ggplot2&quot;)</code></pre>
 options(stringsAsFactors=F)
 
 # Load required packages
-library(neonUtilities)</code></pre>
-<pre><code>## Warning: package &#39;neonUtilities&#39; was built under R version 4.0.5</code></pre>
-<pre class="r"><code>library(ggplot2)</code></pre>
+library(neonUtilities)
+library(ggplot2)</code></pre>
 <p>The inputs to <code>loadByProduct()</code> control which data to
 download and how to manage the processing. The following are frequently
 used inputs:</p>
@@ -625,26 +617,8 @@ print(&quot;Water quality horizontal positions:&quot;)</code></pre>
 <p>Out site, LIRO, is a lake site, where water quality is measured from
 a buoy moored in the deepest part.</p>
 </div>
-<div id="separating-water-quality-data-collected-at-different-depths" class="section level2">
-<h2>Separating water quality data collected at different depths</h2>
-<p>The deeper NEON lakes (CRAM, LIRO and TOOK) are equipped with
-profiling multisondes which collect vertical profiles of the water
-column every four hours. A pressure transducer is used to calculate the
-depth of each measurement. Here, we can bin these into 1 meter
-increments.</p>
-<pre class="r"><code># Subset water quality data by depth into 1 m bins
-waq_0m&lt;-subset(waq_instantaneous,sensorDepth&lt;1)
-waq_1m&lt;-subset(waq_instantaneous,sensorDepth&gt;=1 &amp; sensorDepth&lt;2)
-waq_2m&lt;-subset(waq_instantaneous,sensorDepth&gt;=2 &amp; sensorDepth&lt;3)
-waq_3m&lt;-subset(waq_instantaneous,sensorDepth&gt;=3 &amp; sensorDepth&lt;4)
-waq_4m&lt;-subset(waq_instantaneous,sensorDepth&gt;=4 &amp; sensorDepth&lt;5)
-waq_5m&lt;-subset(waq_instantaneous,sensorDepth&gt;=5 &amp; sensorDepth&lt;6)
-waq_6m&lt;-subset(waq_instantaneous,sensorDepth==6)</code></pre>
-</div>
 <div id="plot-dissolved-oxygen-data" class="section level2">
 <h2>Plot dissolved oxygen data</h2>
-<p>Now that we have our data binned by depth, we can plot it as a time
-series.</p>
 <p>First, let’s identify the column names important for plotting - time
 and dissolved oxygen data. (We can do this for just the original
 dataframe, since all of the subsetted dataframes will have the same
@@ -740,8 +714,8 @@ interpreting data, keep in mind NEON timestamps are always in UTC.</p>
 <code>dissolvedOxygen</code>. The deeper NEON lakes (CRAM, LIRO and
 TOOK) are equipped with profiling multisondes which collect vertical
 profiles of the water column every four hours. A pressure transducer is
-used to calculate the depth of each measurement. For plotting, we can
-bin these into 1 meter increments.</p>
+used to calculate the <code>sensorDepth</code> of each measurement. For
+plotting, we can bin these into 1 meter increments.</p>
 <pre class="r"><code># create discrete color bins by rounding to the nearest meter
 waq_instantaneous$sensorDepthRounded&lt;-as.factor(floor(waq_instantaneous$sensorDepth))
 
