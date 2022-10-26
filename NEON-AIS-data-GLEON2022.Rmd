@@ -514,3 +514,26 @@ data package (which contains individual QF) as well as reading the
 documentation to understand how QFs are derived, before determining for 
 yourselves which data points to include or omit in your analysis.
 
+```{r bathymetry}
+
+# Code snippet for getting bathymetry data, https://data.neonscience.org/data-products/DP4.00132.001
+bathymetryList <- neonUtilities::loadByProduct(dpID = "DP4.00132.001",
+                                               site = "LIRO",
+                                               startdate = "2020-01",
+                                               check.size = FALSE)
+
+bathymetryData <- neonUtilities::zipsByURI(filepath = bathymetryList,
+                                           savepath = "~/GitHub/WORKSHOP-GLEON-NEON-2022",
+                                           check.size = FALSE)
+
+# Read in most recent bathymetry metrics table
+bathyVolMetrics <- read.csv("~/GitHub/WORKSHOP-GLEON-NEON-2022/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VA/D05LIRO_BATH_20200730_volume.csv")
+surfaceAreaMetersSq <- bathyVolMetrics$X2d_area[bathyVolMetrics$Depth == 0]
+
+bathyDepthMetrics <- read.csv("~/GitHub/WORKSHOP-GLEON-NEON-2022/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VA/D05LIRO_BATH_20200730_tracks.csv")
+maxDepth <- min(bathyDepthMetrics$BottomElevation_m, na.rm = TRUE)
+
+
+```
+
+
