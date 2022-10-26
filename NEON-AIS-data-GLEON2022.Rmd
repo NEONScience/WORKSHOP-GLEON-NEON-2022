@@ -303,6 +303,18 @@ hours.  A pressure transducer is used to calculate the `sensorDepth` of each
 measurement.  For plotting, we can bin these into 1 meter increments.
 
 
+```{r site-timezone-info}
+# Just a little snippet if anyone wants to convert to local time
+# NEON data downloads are all in UTC timezone, unless otherwise specified
+devtools::install_github(repo = "NEONScience/NEON-geolocation", 
+                         subdir = "geoNEON")
+siteLocInfo <- geoNEON::getLocBySite("LIRO", 
+                                     type = "site", 
+                                     history = F)
+localTZ <- siteLocInfo$siteTimezone
+waq_instantaneous$localStartTime <- format(waq_instantaneous$startDateTime,"%Y-%m-%dT%H:%M",tz = localTZ)
+```
+
 ```{r plot-waq}
 # create discrete color bins by rounding to the nearest meter
 waq_instantaneous$sensorDepthRounded<-as.factor(floor(waq_instantaneous$sensorDepth))
