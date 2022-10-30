@@ -30,8 +30,8 @@ library(ecocomDP)
 all_tabs_inv <- neonUtilities::loadByProduct(
   dpID = "DP1.20120.001", # the NEON aquatic macroinvert data product
   site = c("CRAM","LIRO"), # NEON sites
-  startdate = "2017-01", # start year-month
-  enddate = "2019-12", # end year-month
+  startdate = "2020-01", # start year-month
+  enddate = "2021-12", # end year-month
   token = Sys.getenv("NEON_TOKEN"), # use NEON_TOKEN environmental variable
   check.size = F) # proceed with download regardless of file size
 
@@ -283,8 +283,8 @@ View(search_result)
 data_neon_inv <- read_data(
   id = "neon.ecocomdp.20120.001.001",
   site = c("CRAM","LIRO"), # NEON sites
-  startdate = "2017-01", # start year-month
-  enddate = "2019-12", # end year-month
+  startdate = "2020-01", # start year-month
+  enddate = "2021-12", # end year-month
   token = Sys.getenv("NEON_TOKEN"),
   check.size = FALSE)
 
