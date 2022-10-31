@@ -93,12 +93,14 @@ products collected in NEON's Aquatic Instrument System:
 
 DP1.20288.001: Water quality
 DP1.20264.001: Temperature at specific depths in surface water
+DP1.20033.001: Nitrate in surface water
 
 * `site`: defaults to "all", meaning all sites with available data; 
 To download data from a specific site, use the 4-letter NEON site code.
 The site codes for the seven NEON lake sites are:
 
 BARC = Barco Lake FL          
+SUGG = Suggs Lake FL
 CRAM = Crampton Lake WI         
 LIRO = Little Rock Lake WI      
 PRLA = Prairie Lake ND          
@@ -224,8 +226,8 @@ and claibrations, for example what the sensor was reading in standards before
 and after.  This can be useful in performing drift correction or adjusting 
 calibration offsets. 
 
-Let's perform the same thing for the temperature at specific depths data
-product too:
+Let's perform the same thing for the temperature at specific depths and
+nitrate in surface water data products too:
 ```{r unlist-remainder}
 list2env(tsd, .GlobalEnv)
 list2env(nsw, .GlobalEnv)
@@ -247,8 +249,8 @@ separate `readme`,  `sensor_position` and `variables` files.
 
 ## A note about sensor positions
 
-NEON often collects the same type of data from sensors in different locations. These 
-data are delivered together but you will frequently want to plot the data 
+NEON often collects the same type of data from sensors in different locations. 
+These data are delivered together but you will frequently want to plot the data 
 separately or only include data from one sensor in your analysis. NEON uses the 
 `horizontalPosition` variable in the data tables to describe which sensor 
 data is collected from. The `horizontalPosition` is always a three digit number 
@@ -271,8 +273,8 @@ Let's see what horizontalPositions are found in the data we just downloaded.
 print("Water quality horizontal positions:")
 unique(waq_instantaneous$horizontalPosition)
 ```
-Out site, LIRO, is a lake site, where water quality is measured from a buoy moored 
-in the deepest part.  
+Out site, LIRO, is a lake site, where water quality is measured from a buoy 
+moored in the deepest part.  
 
 ## Plot dissolved oxygen data
 
@@ -285,14 +287,14 @@ There are several ways of doing this:
 # One option is to view column names in the data frame
 colnames(waq_instantaneous)
 
-# Alternatively, view the variables object corresponding to the data product for more information
+# Alternatively, view the variables file
 View(variables_20288)
 ```
 Quite a few columns in the water quality data product!
 
-The time column we'll consider for instrumented systems is `endDateTime` 
+The time column we'll consider for instrumented systems is `startDateTime` 
 because it approximately represents data within the interval on or before the 
-`endDateTime` time stamp. Timestamp column choice matters for time-aggregated 
+`startDateTime` time stamp. Timestamp column choice matters for time-aggregated 
 datasets, but should not matter for instantaneous data such as water quality.
 When interpreting data, keep in mind NEON timestamps are always in UTC.
 
@@ -330,9 +332,9 @@ plot_DO
 ```
 ## Plot water temperature data
 
-Now let's try plotting temperature. Because the temperature chain is static, each of 
-the thermistors has their own horizontalPosition with a known depth.  These can be 
-found both in the data table, and the sensor_positions file.  
+Now let's try plotting temperature. Because the temperature chain is static, 
+each of the thermistors has their own horizontalPosition with a known depth.  
+These can be found both in the data table, and the sensor_positions file.  
 
 ```{r view-position}
 # View sensor positions file
@@ -353,8 +355,8 @@ plot_Temp
 ```
 ## Plot nitrate data with uncertainty
 
-Most NEON data products are published with uncertainty values. Lets try plotting the 
-nitrate in surface water data with uncertainty bands added.
+Most NEON data products are published with uncertainty values. Lets try plotting 
+the nitrate in surface water data with uncertainty bands added.
 
 ```{r plot-uncert}
 # plot
