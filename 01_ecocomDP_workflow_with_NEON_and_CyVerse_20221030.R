@@ -9,7 +9,7 @@ library(tidyverse)
 library(neonUtilities)
 library(ecocomDP)
 
-install.packages("neonOS")
+#install.packages("neonOS")
 library(neonOS) #new package, can use to merge tables and find duplicates
 
 
@@ -371,8 +371,8 @@ wide_neon_inv <- data_neon_inv$tables$observation %>%
   tibble::column_to_rownames("event_id")
 
 # make sure now rows or columns sum to 0
-rowSums(wide_neon_inv) %>% min()
 colSums(wide_neon_inv) %>% min()  
+rowSums(wide_neon_inv) %>% min()
 
 
 # load vegan library for ordination analysis
@@ -416,7 +416,7 @@ flat_neon_inv_allsites <- data_neon_inv_allsites %>% flatten_data()
 
 
 ## ----download-ntl-macroinvert, message=FALSE, warning=FALSE---------------------------------------------------------
-# pull data for NTL aquatic macroinvertebrates to compate
+# pull data for NTL aquatic macroinvertebrates to compare
 data_ntl_inv <- read_data(id = "edi.290.2")
 
 # flatten the dataset
