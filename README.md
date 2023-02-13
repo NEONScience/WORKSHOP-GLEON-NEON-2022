@@ -4,15 +4,17 @@ Working with data from the US National Ecological Observatory Network
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- ****** Description ****** -->
 
-This repository contains the code that will be used for the 2022 GLEON
-all hands meeting workshop: Working with data from the US National
-Ecological Observatory Network
+This repository contains the code that will be used for the 2023 GLEON
+virtual meeting
+(<https://gleon.org/meetings/GLEON2023Virtual/Program_Overview>) and
+2022 GLEON all hands meeting workshop: Working with data from the US
+National Ecological Observatory Network
 (<https://gleon.org/meetings/gleon22/Workshops>).
 
 <!-- ****** Organizers ****** -->
 
 Organized by Kevin Rose (Rensselaer Polytechnic Institute) and led by
-Kaelin Cawley, Bobby Hensley, and Steph Parker (all from NEON).
+Kaelin Cawley, Bobby Hensley, and Stephanie Parker (all from NEON).
 
 <!-- ****** Prep ****** -->
 
@@ -33,9 +35,20 @@ Kaelin Cawley, Bobby Hensley, and Steph Parker (all from NEON).
 
 <!-- ****** Agenda ****** -->
 
-## Agenda for the workshop
+## Agenda for the Feb 2023 virtual workshop
 
-1.  20 minute introduction to NEON
+1.  2 recorded introductory videos for the NEON Observatory and data
+    portal
+2.  A recorded 4-part aquatic instrument system coding tutorial
+3.  A recorded 3-part aquatic macroinvertebrate diversity coding
+    tutorial
+4.  There will be a live Q&A session Tuesday February 14th at 13:00 UTC
+
+<!-- ****** Agenda ****** -->
+
+## Agenda for the Oct 2022 in-person workshop
+
+1.  20 minute introduction to the NEON Observatory and data portal
 2.  70 minute live coding tutorial in R using lake chemical and physical
     data (NEON-AIS-data-GLEON2022.Rmd script in this repo)
 3.  30 minute break
@@ -73,7 +86,9 @@ GLEON-NEON 2022 Workshop GitHub repo:
 
 ## Usage
 
-This repository is designed to be used with NEON data as part of a live
+This repository is designed to be used with NEON data as part of a
+virtual tutorial taking place February 2023
+(<https://gleon.org/meetings/GLEON2023Virtual/Program_Overview>) or live
 tutorial taking place October 30th, 2022
 (<https://gleon.org/meetings/gleon22/Program_Overview>).
 
