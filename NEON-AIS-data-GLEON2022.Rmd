@@ -524,15 +524,18 @@ bathymetryList <- neonUtilities::loadByProduct(dpID = "DP4.00132.001",
                                                startdate = "2020-01",
                                                check.size = FALSE)
 
+# This downloads files to a directory on your computer
+# example path workingFolder <- "~/GitHub/WORKSHOP-GLEON-NEON-2022"
+workingFolder <- "YOUR PATH HERE"
 bathymetryData <- neonUtilities::zipsByURI(filepath = bathymetryList,
-                                           savepath = "~/GitHub/WORKSHOP-GLEON-NEON-2022",
+                                           savepath = workingFolder,
                                            check.size = FALSE)
 
 # Read in most recent bathymetry metrics table
-bathyVolMetrics <- read.csv("~/GitHub/WORKSHOP-GLEON-NEON-2022/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VA/D05LIRO_BATH_20200730_volume.csv")
+bathyVolMetrics <- read.csv(paste0(workingFolder,"/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VB/D05_LIRO_BATH_20200730_volume.csv"))
 surfaceAreaMetersSq <- bathyVolMetrics$X2d_area[bathyVolMetrics$Depth == 0]
 
-bathyDepthMetrics <- read.csv("~/GitHub/WORKSHOP-GLEON-NEON-2022/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VA/D05LIRO_BATH_20200730_tracks.csv")
+bathyDepthMetrics <- read.csv(paste0(workingFolder,"/NEON_D05_LIRO_20200730_BATHYMETRY_L4_VB/D05_LIRO_BATH_20200730_tracks.csv"))
 maxDepth <- min(bathyDepthMetrics$BottomElevation_m, na.rm = TRUE)
 
 
